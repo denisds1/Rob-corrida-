@@ -1,76 +1,74 @@
-const player = document.getElementById('player');
-const obstacle = document.getElementById('obstacle');
-const police = document.getElementById('police');
-const home = document.getElementById('home');
-
-let isJumping = false;
-
-document.addEventListener('keydown', function (e) {
-  if (e.code === 'Space' && !isJumping) {
-    jump();
-  }
-});
-
-function jump() {
-  isJumping = true;
-  let position = 0;
-  let upInterval = setInterval(() => {
-    if (position >= 150) {
-      clearInterval(upInterval);
-      let downInterval = setInterval(() => {
-        if (position <= 0) {
-          clearInterval(downInterval);
-          isJumping = false;
-        } else {
-          position -= 5;
-          player.style.bottom = position + 'px';
-        }
-      }, 20);
-    } else {
-      position += 5;
-      player.style.bottom = position + 'px';
-    }
-  }, 20);
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(#444, #222);
+  font-family: sans-serif;
 }
 
-function checkCollision() {
-  const playerRect = player.getBoundingClientRect();
-  const obstacleRect = obstacle.getBoundingClientRect();
-  const policeRect = police.getBoundingClientRect();
-  const homeRect = home.getBoundingClientRect();
-
-  // Colisão com obstáculo
-  if (
-    playerRect.right > obstacleRect.left &&
-    playerRect.left < obstacleRect.right &&
-    playerRect.bottom > obstacleRect.top &&
-    playerRect.top < obstacleRect.bottom
-  ) {
-    alert('Você bateu em um obstáculo! Tente novamente.');
-    location.reload();
-  }
-
-  // Colisão com polícia
-  if (
-    playerRect.right > policeRect.left &&
-    playerRect.left < policeRect.right &&
-    playerRect.bottom > policeRect.top &&
-    playerRect.top < policeRect.bottom
-  ) {
-    alert('A polícia te pegou! Tente novamente.');
-    location.reload();
-  }
-
-  // Chegou em casa
-  if (
-    playerRect.right > homeRect.left &&
-    playerRect.left < homeRect.right &&
-    playerRect.bottom > homeRect.top &&
-    playerRect.top < homeRect.bottom
-  ) {
-    alert('Você chegou em casa e pegou a moto branca! Parabéns!');
-    location.reload();
-  }
+#game {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  background: url('https://i.imgur.com/3e5z6cG.png') repeat-x; /* Imagem representando a favela */
+  background-size: cover;
+  border-bottom: 5px solid #000;
 }
 
-setInterval(checkCollision, 100);
+#player {
+  position: absolute;
+  bottom: 0;
+  left: 50px;
+  width: 50px;
+  height: 80px;
+  background: url('https://i.imgur.com/1X1K0XG.png') no-repeat center center; /* Imagem do Robô */
+  background-size: cover;
+}
+
+#obstacle {
+  position: absolute;
+  bottom: 0;
+  left: 100%;
+  width: 40px;
+  height: 60px;
+  background: url('https://i.imgur.com/2nCt3Sbl.png') no-repeat center center; /* Obstáculo */
+  background-size: cover;
+  animation: moveObstacle 3s linear infinite;
+}
+
+#police {
+  position: absolute;
+  bottom: 0;
+  left: -60px;
+  width: 50px;
+  height: 80px;
+  background: url('https://i.imgur.com/3X3K0XG.png') no-repeat center center; /* Imagem da polícia */
+  background-size: cover;
+  animation: movePolice 5s linear infinite;
+}
+
+#home {
+  position: absolute;
+  bottom: 0;
+  right: -100px;
+  width: 100px;
+  height: 100px;
+  background: url('https://i.imgur.com/4X4K0XG.png') no-repeat center center; /* Casa com moto branca */
+  background-size: cover;
+  animation: moveHome 10s linear forwards;
+}
+
+@keyframes moveObstacle {
+  0% { left: 100%; }
+  100% { left: -40px; }
+}
+
+@keyframes movePolice {
+  0% { left: -60px; }
+  100% { left: 100%; }
+}
+
+@keyframes moveHome {
+  0% { right: -100px; }
+  100% { right: 50px; }
+}
